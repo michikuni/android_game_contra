@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App theme kế thừa AppCompat/M2 -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Tùy chọn màu sắc -->
+        <item name="colorPrimary">@android:color/black</item>
+        <item name="colorPrimaryVariant">@android:color/darker_gray</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+    </style>
+</resources>
