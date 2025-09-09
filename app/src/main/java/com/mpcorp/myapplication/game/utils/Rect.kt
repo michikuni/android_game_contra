@@ -11,8 +11,13 @@ object Physics {
 
     // Di chuyển trục X, kiểm tra va chạm gạch
     fun moveX(rect: RectF, vx: Float, dt: Float, level: Level): Float {
+        val prevLeft = rect.left
         var dx = vx * dt
+
+        // tịnh tiến theo vận tốc
         rect.offset(dx, 0f)
+
+        // va chạm gạch theo trục X
         val blocks = level.rectsAround(rect)
         for (b in blocks) {
             if (RectF.intersects(rect, b)) {
@@ -21,28 +26,54 @@ object Physics {
                 dx = 0f
             }
         }
-        return dx
+
+        // *** CHẶN BIÊN MAP THEO TRỤC X ***
+        val minLeft = 0f
+        val maxLeft = (level.pixelWidth - rect.width()).coerceAtLeast(0f) // tránh âm
+        if (rect.left < minLeft) {
+            rect.offset(minLeft - rect.left, 0f)
+        } else if (rect.left > maxLeft) {
+            rect.offset(maxLeft - rect.left, 0f)
+        }
+
+        // trả về dịch chuyển thực tế (phòng khi bạn cần)
+        return rect.left - prevLeft
     }
 
-    // Di chuyển trục Y, có trọng lực + chặn sàn/trần
+    // utils/Physics.kt -> trong moveY() sau vòng xử lý va chạm gạch:
     fun moveY(rect: RectF, vy: Float, dt: Float, level: Level): Pair<Float, Boolean> {
         var vvy = vy + GRAVITY * dt
         vvy = vvy.coerceAtMost(MAX_FALL)
         var dy = vvy * dt
         rect.offset(0f, dy)
         var onGround = false
+
         val blocks = level.rectsAround(rect)
         for (b in blocks) {
             if (RectF.intersects(rect, b)) {
                 if (dy > 0) { // rơi xuống sàn
                     rect.offset(0f, b.top - rect.bottom)
                     dy = 0f; vvy = 0f; onGround = true
-                } else if (dy < 0) { // đập trần
+                } else if (dy < 0) { // đụng trần
                     rect.offset(0f, b.bottom - rect.top)
                     dy = 0f; vvy = 0f
                 }
             }
         }
+
+        // *** CHẶN SÀN THẾ GIỚI (nếu map không có gạch ở đáy) ***
+        if (rect.bottom > level.pixelHeight) {
+            rect.offset(0f, level.pixelHeight - rect.bottom)
+            vvy = 0f
+            onGround = true
+        }
+        // (tuỳ chọn) chặn trần thế giới
+        if (rect.top < 0f) {
+            rect.offset(0f, -rect.top)
+            vvy = 0f
+        }
+
         return vvy to onGround
     }
+
 }

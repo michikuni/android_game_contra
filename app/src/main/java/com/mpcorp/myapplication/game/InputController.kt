@@ -2,71 +2,63 @@ package com.mpcorp.myapplication.game
 
 import android.graphics.*
 import android.view.MotionEvent
-import kotlin.math.hypot
 
 class InputController {
     enum class Action { Jump, Fire }
 
     var left = false
     var right = false
-    private var jumpPressed = false
-    private var firePressed = false
+    private var jumpHeld = false
+    private var fireHeld = false
 
-    // Khu vực điều khiển
-    private val dpadCenter = PointF()
-    private var dpadRadius = 0f
+    private val btnLeft = RectF()
+    private val btnRight = RectF()
     private val btnJump = RectF()
     private val btnFire = RectF()
 
     fun onTouch(e: MotionEvent, w: Int, h: Int, onAction: (Action) -> Unit) {
-        val dp = h * 0.18f
-        dpadRadius = dp
-        dpadCenter.set(dp * 1.2f, h - dp * 1.2f)
+        val btnW = w * 0.17f
+        val btnH = h * 0.14f
+        val pad = 18f
 
-        val btnSize = dp * 1.1f
-        btnJump.set(w - btnSize * 2.6f, h - btnSize * 1.7f, w - btnSize * 1.6f, h - btnSize * 0.7f)
-        btnFire.set(w - btnSize * 1.2f, h - btnSize * 2.2f, w - btnSize * 0.2f, h - btnSize * 1.2f)
+        // trái dưới
+        btnLeft.set(pad, h - btnH - pad, pad + btnW, h - pad)
+        btnRight.set(btnLeft.right + pad, h - btnH - pad, btnLeft.right + pad + btnW, h - pad)
+
+        // phải dưới
+        btnJump.set(w - pad - btnW * 2 - pad, h - btnH - pad, w - pad - btnW - pad, h - pad)
+        btnFire.set(w - pad - btnW, h - btnH - pad, w - pad, h - pad)
 
         left = false; right = false
         when (e.actionMasked) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE, MotionEvent.ACTION_POINTER_DOWN -> {
                 for (i in 0 until e.pointerCount) {
                     val x = e.getX(i); val y = e.getY(i)
-                    // D-pad
-                    if (hypot((x - dpadCenter.x).toDouble(), (y - dpadCenter.y).toDouble()) <= dpadRadius) {
-                        if (x < dpadCenter.x - dpadRadius * 0.3f) left = true
-                        if (x > dpadCenter.x + dpadRadius * 0.3f) right = true
-                    }
-                    // Jump
-                    if (btnJump.contains(x, y) && !jumpPressed) { jumpPressed = true; onAction(Action.Jump) }
-                    // Fire
-                    if (btnFire.contains(x, y) && !firePressed) { firePressed = true; onAction(Action.Fire) }
+                    if (btnLeft.contains(x, y))  left  = true
+                    if (btnRight.contains(x, y)) right = true
+                    if (btnJump.contains(x, y) && !jumpHeld) { jumpHeld = true; onAction(Action.Jump) }
+                    if (btnFire.contains(x, y) && !fireHeld) { fireHeld = true; onAction(Action.Fire) }
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_CANCEL -> {
-                jumpPressed = false; firePressed = false
+                jumpHeld = false; fireHeld = false
             }
         }
     }
 
     fun draw(c: Canvas, w: Int, h: Int) {
         val p = Paint(Paint.ANTI_ALIAS_FLAG)
-        p.color = Color.argb(80, 255, 255, 255)
-        // D-pad
-        c.drawCircle(dpadCenter.x, dpadCenter.y, dpadRadius, p)
-        p.color = Color.argb(160, 255, 255, 255)
-        c.drawCircle(dpadCenter.x, dpadCenter.y, dpadRadius * 0.3f, p)
-
-        // Buttons
-        p.color = Color.argb(120, 0, 200, 255)
-        c.drawRoundRect(btnJump, 22f, 22f, p)
-        p.color = Color.argb(120, 255, 160, 0)
-        c.drawRoundRect(btnFire, 22f, 22f, p)
-
-        // Labels
-        p.color = Color.WHITE
-        p.textSize = 28f
-        c.drawText("JUMP", btnJump.left + 10, btnJump.centerY() + 8, p)
-        c.drawText("FIRE", btnFire.left + 16, btnFire.centerY() + 8, p)
+        fun drawBtn(r: RectF, label: String) {
+            p.style = Paint.Style.FILL
+            p.color = Color.argb(120, 255, 255, 255); c.drawRoundRect(r, 22f, 22f, p)
+            p.style = Paint.Style.STROKE; p.strokeWidth = 3f; p.color = Color.argb(180, 0, 0, 0)
+            c.drawRoundRect(r, 22f, 22f, p)
+            p.style = Paint.Style.FILL; p.color = Color.WHITE; p.textSize = 28f
+            c.drawText(label, r.left + 14, r.centerY() + 10, p)
+        }
+        drawBtn(btnLeft,  "LEFT")
+        drawBtn(btnRight, "RIGHT")
+        drawBtn(btnJump,  "JUMP")
+        drawBtn(btnFire,  "FIRE")
     }
 }

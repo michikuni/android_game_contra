@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/splash_bg">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ContraK"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="36dp"/>
+
+    <!-- Fake platform banner -->
+    <View
+        android:id="@+id/banner"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:background="#3A3B4F"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginTop="18dp"/>
+
+    <!-- Buttons group -->
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/banner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button"
+            android:id="@+id/btnPlay"
+            android:text="PLAY"
+            android:layout_width="180dp"
+            android:layout_height="60dp"
+            android:layout_margin="12dp"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
+            app:cornerRadius="20dp"
+            app:backgroundTint="@color/primary_btn"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLevels"
+            android:text="LEVELS"
+            android:layout_width="160dp"
+            android:layout_height="60dp"
+            android:layout_margin="12dp"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
+            app:cornerRadius="20dp"
+            app:backgroundTint="@color/primary_btn"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSettings"
+            android:text="SETTINGS"
+            android:layout_width="160dp"
+            android:layout_height="60dp"
+            android:layout_margin="12dp"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
+            app:cornerRadius="20dp"
+            app:backgroundTint="@color/primary_btn"/>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <!-- block xám -->
+    <path android:fillColor="#3A3B4F" android:pathData="M8,60h92v16h-92z"/>
+    <!-- player cyan -->
+    <path android:fillColor="#36E0E0" android:pathData="M30,38h14v22h-14z"/>
+    <!-- enemy đỏ -->
+    <path android:fillColor="#FF3B30" android:pathData="M64,38h14v22h-14z"/>
+</vector>
