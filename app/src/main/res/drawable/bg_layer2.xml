@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="256dp"
+    android:viewportWidth="512"
+    android:viewportHeight="256">
+    <!-- nền trong suốt (chỉ layer cây thôi) -->
+    <path android:fillColor="#00000000" android:pathData="M0,0h512v256h-512z" />
+    <!-- bụi cây -->
+    <path android:fillColor="#3A4F2B" android:pathData="M0,200 L60,140 L120,200 Z" />
+    <path android:fillColor="#3A4F2B" android:pathData="M100,200 L160,150 L220,200 Z" />
+    <path android:fillColor="#3A4F2B" android:pathData="M200,200 L260,130 L320,200 Z" />
+    <path android:fillColor="#3A4F2B" android:pathData="M300,200 L360,150 L420,200 Z" />
+    <path android:fillColor="#3A4F2B" android:pathData="M400,200 L460,140 L512,200 Z" />
+</vector>

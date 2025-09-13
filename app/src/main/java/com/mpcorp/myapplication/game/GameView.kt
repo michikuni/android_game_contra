@@ -5,6 +5,7 @@ import android.graphics.*
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.MotionEvent
+import com.mpcorp.myapplication.R
 import com.mpcorp.myapplication.game.entities.Bullet
 import com.mpcorp.myapplication.game.entities.Enemy
 import com.mpcorp.myapplication.game.entities.Player
@@ -14,6 +15,15 @@ import com.mpcorp.myapplication.game.entities.EnemyConfig
 import com.mpcorp.myapplication.game.entities.PlayerConfig
 
 class GameView(ctx: Context) : SurfaceView(ctx), SurfaceHolder.Callback {
+
+    private val bg1: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.bg_art1)
+    private val bg2: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.treee)
+
+    private val parallax1 = 0.30f
+    private val parallax2 = 0.65f
+
+    private var bg1Offset = 0f
+    private var bg2Offset = 0f
 
     private val loop = GameLoop(this)
     private val camera = PointF(0f, 0f)
@@ -54,6 +64,9 @@ class GameView(ctx: Context) : SurfaceView(ctx), SurfaceHolder.Callback {
     }
 
     fun update(dt: Float) {
+        bg1Offset = (bg1Offset + 20f * dt) % bg1.width   // tốc độ tự cuộn lớp xa
+        bg2Offset = (bg2Offset + 60f * dt) % bg2.width   // lớp gần
+
         // input & player
         player.handleInput(input)
         player.update(dt, level)
@@ -109,28 +122,56 @@ class GameView(ctx: Context) : SurfaceView(ctx), SurfaceHolder.Callback {
 
     }
 
+    private fun drawTiledHorizontally(canvas: Canvas, bmp: Bitmap, offsetX: Float) {
+        // Scale ảnh theo chiều cao màn hình để phủ full ngang
+        val targetH = height.toFloat()
+        val scale = targetH / bmp.height.toFloat()
+        val drawW = bmp.width * scale
+
+        // Dịch trái theo offset (đã nhân scale)
+        var startX = -((offsetX % drawW + drawW) % drawW)
+
+        val matrix = Matrix()
+        while (startX < width) {
+            matrix.reset()
+            matrix.postScale(scale, scale)
+            matrix.postTranslate(startX, 0f)
+            canvas.drawBitmap(bmp, matrix, null)
+            startX += drawW
+        }
+    }
+
     fun render() {
         val c = holder.lockCanvas() ?: return
         try {
             c.drawColor(Color.rgb(30, 32, 48))
-            c.save()
-            c.translate(-camera.x, 0f)
 
-            level.draw(c)
+            val bg1OffsetCam = camera.x * parallax1 + bg1Offset
+            val bg2OffsetCam = camera.x * parallax2 + bg2Offset
+            drawTiledHorizontally(c, bg1, bg1OffsetCam)
+            drawTiledHorizontally(c, bg2, bg2OffsetCam)
 
-            paint.color = Color.YELLOW
-            bullets.forEach { c.drawRect(it.rect, paint) }
 
-            paint.color = Color.MAGENTA
-            enemyBullets.forEach { c.drawRect(it.rect, paint) }
+            drawTiledHorizontally(c, bg1, bg1OffsetCam)
+            drawTiledHorizontally(c, bg2, bg2OffsetCam)
 
-            paint.color = Color.RED
-            enemies.forEach { c.drawRect(it.rect, paint) }
+            c.withTranslation(-camera.x, 0f) {
 
-            paint.color = Color.CYAN
-            c.drawRect(player.rect, paint)
+                level.draw(this)
 
-            c.restore()
+                paint.color = Color.YELLOW
+                bullets.forEach { drawRect(it.rect, paint) }
+
+                paint.color = Color.MAGENTA
+                enemyBullets.forEach { drawRect(it.rect, paint) }
+
+                paint.color = Color.RED
+                enemies.forEach { drawRect(it.rect, paint) }
+
+                paint.color = Color.CYAN
+                drawRect(player.rect, paint)
+
+            }
 
             input.draw(c, width, height)
             drawHud(c)

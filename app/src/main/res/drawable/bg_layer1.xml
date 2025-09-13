@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="256dp"
+    android:viewportWidth="512"
+    android:viewportHeight="256">
+    <!-- nền trời -->
+    <path android:fillColor="#1E1F2C" android:pathData="M0,0h512v256h-512z" />
+    <!-- núi xa -->
+    <path android:fillColor="#2D2F45" android:pathData="M0,200 L128,80 L256,200 Z" />
+    <path android:fillColor="#2D2F45" android:pathData="M256,200 L384,100 L512,200 Z" />
+</vector>
